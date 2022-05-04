@@ -16,11 +16,15 @@ class _SplashScreen1State extends State<SplashScreen1> {
   }
 
   void _nagivateState() async {
-    await Future.delayed(const Duration(milliseconds: 1000), () {});
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => HomeScreen()),
-    );
+    try {
+      await Future.delayed(const Duration(milliseconds: 1000), () {});
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   @override

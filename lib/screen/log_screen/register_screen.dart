@@ -204,7 +204,7 @@ class _RegisterationState extends State<Registeration> {
         ),
         padding: const EdgeInsets.symmetric(
           horizontal: 20,
-          vertical: 10,
+          vertical: 4,
         ),
         minWidth: MediaQuery.of(context).size.width,
         onPressed: () async {
@@ -430,6 +430,7 @@ class _RegisterationState extends State<Registeration> {
     userModel.firstName = firstNameController.text;
     userModel.lastName = lastNameController.text;
     userModel.password = passwordController.text;
+    userModel.status = 0;
 
     try {
       final CollectionReference userCollection =

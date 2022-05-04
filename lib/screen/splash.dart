@@ -12,15 +12,23 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _nagivateState();
+    if (mounted) {
+      setState(() {
+        _nagivateState();
+      });
+    }
   }
 
   void _nagivateState() async {
-    await Future.delayed(const Duration(milliseconds: 1000), () {});
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const Login()),
-    );
+    try {
+      await Future.delayed(const Duration(milliseconds: 1000), () {});
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => Login()),
+      );
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   @override

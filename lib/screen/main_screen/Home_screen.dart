@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:samss/screen/main_screen/hoome.dart';
+import 'package:samss/screen/main_screen/hoome1.dart';
 import 'package:samss/screen/main_screen/slidebar.dart';
 
 class HomeScreen extends StatefulWidget {

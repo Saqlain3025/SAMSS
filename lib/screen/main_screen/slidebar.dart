@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:samss/model/user.dart';
 import 'package:samss/screen/log_screen/sign_screen.dart';
 import 'package:samss/services/auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SlideBar extends StatefulWidget {
   SlideBar({Key? key}) : super(key: key);
@@ -54,6 +55,9 @@ class _SlideBarState extends State<SlideBar> {
         minWidth: _screenWidth - 50,
         onPressed: () async {
           await _auth.signOut();
+          final prefs = await SharedPreferences.getInstance();
+          final success = await prefs.remove('email');
+
           Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => Login()));
         },
