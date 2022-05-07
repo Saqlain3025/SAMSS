@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:samss/model/user.dart';
-import 'package:samss/screen/log_screen/sign_screen.dart';
-import 'package:samss/services/auth.dart';
+import 'package:samss/consumer/model/user.dart';
+import 'package:samss/consumer/screen/log_screen/sign_screen.dart';
+import 'package:samss/consumer/services/auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SlideBar extends StatefulWidget {

@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'package:samss/screen/log_screen/reset_page.dart';
-import 'package:samss/screen/main_screen/Home_screen.dart';
-import 'package:samss/screen/log_screen/register_screen.dart';
+import 'package:samss/consumer/screen/log_screen/reset_page.dart';
+import 'package:samss/consumer/screen/main_screen/Home_screen.dart';
+import 'package:samss/consumer/screen/log_screen/register_screen.dart';
+import 'package:samss/supplier/screen/supplier_login_screen/supplier_login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
@@ -165,48 +166,48 @@ class _LoginState extends State<Login> {
     );
 
 //login with gamil
-    final gButton = Material(
-      child: SizedBox.fromSize(
-        child: Material(
-          color: Colors.white,
-          child: InkWell(
-            onTap: () {},
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const <Widget>[
-                Icon(
-                  Icons.mail,
-                  color: Colors.grey,
-                ), // <-- Icon
-                Text("Google"), // <-- Text
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+    // final gButton = Material(
+    //   child: SizedBox.fromSize(
+    //     child: Material(
+    //       color: Colors.white,
+    //       child: InkWell(
+    //         onTap: () {},
+    //         child: Column(
+    //           mainAxisAlignment: MainAxisAlignment.center,
+    //           children: const <Widget>[
+    //             Icon(
+    //               Icons.mail,
+    //               color: Colors.grey,
+    //             ), // <-- Icon
+    //             Text("Google"), // <-- Text
+    //           ],
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
 
     //login with facebook
-    final fButton = Material(
-      child: SizedBox.fromSize(
-        child: Material(
-          color: Colors.white,
-          child: InkWell(
-            onTap: () {},
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const <Widget>[
-                Icon(
-                  Icons.facebook,
-                  color: Colors.grey,
-                ), // <-- Icon
-                Text("Facebook"), // <-- Text
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+    // final fButton = Material(
+    //   child: SizedBox.fromSize(
+    //     child: Material(
+    //       color: Colors.white,
+    //       child: InkWell(
+    //         onTap: () {},
+    //         child: Column(
+    //           mainAxisAlignment: MainAxisAlignment.center,
+    //           children: const <Widget>[
+    //             Icon(
+    //               Icons.facebook,
+    //               color: Colors.grey,
+    //             ), // <-- Icon
+    //             Text("Facebook"), // <-- Text
+    //           ],
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
 
 //forget password
     final resetPassword = Material(
@@ -216,7 +217,7 @@ class _LoginState extends State<Login> {
               context, MaterialPageRoute(builder: (context) => ResetScreen()));
         },
         child: const Text(
-          "Forget Password",
+          "Forget Password?",
           style: TextStyle(
               color: Color.fromARGB(255, 62, 73, 78),
               fontWeight: FontWeight.w700),
@@ -224,9 +225,71 @@ class _LoginState extends State<Login> {
       ),
     );
 
+    // Toggle button
+    final toggle = Container(
+      margin: const EdgeInsets.only(top: 20),
+      padding: EdgeInsets.all(2),
+      width: 150,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.blueGrey,
+        ),
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const <Widget>[
+              Icon(
+                Icons.home,
+                color: Colors.blue,
+              ), // <-- Icon
+              Text("Consumer",
+                  style: TextStyle(
+                    color: Colors.blue,
+                  )), // <-- Text
+            ],
+          ),
+          const SizedBox(width: 10),
+          const Text(
+            "|",
+            style: TextStyle(
+              color: Colors.blueGrey,
+            ),
+          ),
+          const SizedBox(width: 10),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SupplierLogin()));
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const <Widget>[
+                Icon(
+                  Icons.directions_bus,
+                  color: Colors.grey,
+                ), // <-- Icon
+                Text("Supplier"), // <-- Text
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+
     return Scaffold(
       body: Container(
-        color: Colors.blue.shade500,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.indigo,
+              Colors.blueAccent,
+            ],
+          ),
+        ),
         width: _screenWidth,
         height: _screenHieght,
         child: SingleChildScrollView(
@@ -238,13 +301,22 @@ class _LoginState extends State<Login> {
                 children: [
                   Container(
                     margin: const EdgeInsets.only(top: 50),
-                    child: Image.asset(
-                      "assets/image/logo3.png",
-                      height: 250,
-                      width: 300,
+                    padding: EdgeInsets.all(10),
+                    child: const Text(
+                      "Login",
+                      style: TextStyle(
+                          fontSize: 50,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
+                  const Text(
+                    "Consumer",
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w300),
+                  ),
                   AnimatedContainer(
+                    margin: const EdgeInsets.only(top: 40),
                     duration: const Duration(milliseconds: 500),
                     width: double.infinity,
                     height: 480,
@@ -253,21 +325,14 @@ class _LoginState extends State<Login> {
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(30),
                         topRight: Radius.circular(30),
+                        bottomLeft: Radius.circular(30),
+                        bottomRight: Radius.circular(30),
                       ),
                       color: Colors.white,
                     ),
                     child: Column(
                       children: [
-                        Container(
-                          margin: const EdgeInsets.only(top: 15),
-                          child: Text(
-                            "Login",
-                            style: TextStyle(
-                                fontSize: 50,
-                                color: Colors.blue.shade400,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
+                        toggle,
                         const SizedBox(
                           height: 10,
                         ),
@@ -299,7 +364,7 @@ class _LoginState extends State<Login> {
                           child: loginButton,
                         ),
                         const SizedBox(
-                          height: 10,
+                          height: 20,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -324,28 +389,28 @@ class _LoginState extends State<Login> {
                             ),
                           ],
                         ),
-                        // const SizedBox(height: 10),
-                        const Text("SignIn with",
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.blueGrey,
-                                fontWeight: FontWeight.bold)),
+                        // // const SizedBox(height: 10),
+                        // const Text("SignIn with",
+                        //     style: TextStyle(
+                        //         fontSize: 18,
+                        //         color: Colors.blueGrey,
+                        //         fontWeight: FontWeight.bold)),
                         const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            gButton,
-                            const SizedBox(width: 20),
-                            const Text(
-                              "OR",
-                              style: TextStyle(
-                                color: Colors.blueGrey,
-                              ),
-                            ),
-                            const SizedBox(width: 20),
-                            fButton,
-                          ],
-                        ),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.center,
+                        //   children: [
+                        //     gButton,
+                        //     const SizedBox(width: 20),
+                        //     const Text(
+                        //       "OR",
+                        //       style: TextStyle(
+                        //         color: Colors.blueGrey,
+                        //       ),
+                        //     ),
+                        //     const SizedBox(width: 20),
+                        //     fButton,
+                        //   ],
+                        // ),
                         const SizedBox(height: 10),
                         const Text(
                           "Don't have an account?",
@@ -354,7 +419,7 @@ class _LoginState extends State<Login> {
                             fontSize: 16,
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 20),
                         Container(
                           width: 250,
                           height: 40,

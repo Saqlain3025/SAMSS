@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:samss/screen/log_screen/sign_screen.dart';
+import 'package:samss/consumer/screen/log_screen/sign_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);

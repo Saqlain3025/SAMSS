@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:samss/screen/main_screen/Home_screen.dart';
+import 'package:samss/consumer/screen/main_screen/Home_screen.dart';
 
 class VerifyScreen extends StatefulWidget {
   @override

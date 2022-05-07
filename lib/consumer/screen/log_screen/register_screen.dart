@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:samss/model/user.dart';
-import 'package:samss/screen/log_screen/sign_screen.dart';
-import 'package:samss/screen/log_screen/verifying_screen.dart';
+import 'package:samss/consumer/model/user.dart';
+import 'package:samss/consumer/screen/log_screen/sign_screen.dart';
+import 'package:samss/consumer/screen/log_screen/verifying_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Registeration extends StatefulWidget {
@@ -21,6 +21,7 @@ class _RegisterationState extends State<Registeration> {
 
   TextEditingController firstNameController = new TextEditingController();
   TextEditingController lastNameController = new TextEditingController();
+  TextEditingController contactController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
   final TextEditingController conformPasswordController =
@@ -96,6 +97,41 @@ class _RegisterationState extends State<Registeration> {
       ),
     );
 
+    // contact filed
+    final contactField = TextFormField(
+      autofocus: false,
+      keyboardType: TextInputType.phone,
+      controller: contactController,
+      validator: (value) {
+        RegExp regex = new RegExp(r'^.{11,}$');
+        if (value!.isEmpty) {
+          return ("Please Enter your Contact.");
+        } else if (!regex.hasMatch(value)) {
+          return ("Please Enter name of 11 character or more");
+        } else {
+          return null;
+        }
+      },
+      onSaved: (value) {
+        lastNameController.text = value!;
+      },
+      textInputAction: TextInputAction.next,
+      decoration: const InputDecoration(
+        prefixIcon: Icon(Icons.phone_android),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 15,
+        ),
+        hintText: "Contact",
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
+          ),
+        ),
+      ),
+    );
+
+//email field
     final emailField = TextFormField(
       autofocus: false,
       keyboardType: TextInputType.emailAddress,
@@ -222,53 +258,60 @@ class _RegisterationState extends State<Registeration> {
       ),
     );
 
-//register with gmail
-    final gButton = Material(
-      child: SizedBox.fromSize(
-        child: Material(
-          color: Colors.white,
-          child: InkWell(
-            onTap: () {},
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const <Widget>[
-                Icon(
-                  Icons.mail,
-                  color: Colors.grey,
-                ), // <-- Icon
-                Text("Google"), // <-- Text
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+// //register with gmail
+//     final gButton = Material(
+//       child: SizedBox.fromSize(
+//         child: Material(
+//           color: Colors.white,
+//           child: InkWell(
+//             onTap: () {},
+//             child: Column(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               children: const <Widget>[
+//                 Icon(
+//                   Icons.mail,
+//                   color: Colors.grey,
+//                 ), // <-- Icon
+//                 Text("Google"), // <-- Text
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
 
-    //register with facebook
-    final fButton = Material(
-      child: SizedBox.fromSize(
-        child: Material(
-          color: Colors.white,
-          child: InkWell(
-            onTap: () {},
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const <Widget>[
-                Icon(
-                  Icons.facebook,
-                  color: Colors.grey,
-                ), // <-- Icon
-                Text("Facebook"), // <-- Text
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+    // //register with facebook
+    // final fButton = Material(
+    //   child: SizedBox.fromSize(
+    //     child: Material(
+    //       color: Colors.white,
+    //       child: InkWell(
+    //         onTap: () {},
+    //         child: Column(
+    //           mainAxisAlignment: MainAxisAlignment.center,
+    //           children: const <Widget>[
+    //             Icon(
+    //               Icons.facebook,
+    //               color: Colors.grey,
+    //             ), // <-- Icon
+    //             Text("Facebook"), // <-- Text
+    //           ],
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
 
     return Scaffold(
       body: Container(
-        color: Colors.blue.shade500,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.indigo,
+              Colors.blueAccent,
+            ],
+          ),
+        ),
         width: _screenWidth,
         height: _screenHieght,
         child: SingleChildScrollView(
@@ -278,12 +321,23 @@ class _RegisterationState extends State<Registeration> {
               child: Column(
                 children: [
                   Container(
-                    margin: const EdgeInsets.only(top: 30),
-                    child: Image.asset(
-                      "assets/image/logo3.png",
-                      height: 250,
-                      width: 250,
+                    margin: const EdgeInsets.only(top: 50),
+                    padding: EdgeInsets.all(10),
+                    child: const Text(
+                      "New Account",
+                      style: TextStyle(
+                          fontSize: 50,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
                     ),
+                  ),
+                  const Text(
+                    "Consumer",
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w300),
+                  ),
+                  const SizedBox(
+                    height: 20,
                   ),
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 500),
@@ -293,23 +347,15 @@ class _RegisterationState extends State<Registeration> {
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(30),
                         topRight: Radius.circular(30),
+                        bottomLeft: Radius.circular(30),
+                        bottomRight: Radius.circular(30),
                       ),
                       color: Colors.white,
                     ),
                     child: Column(
                       children: [
-                        Container(
-                          margin: const EdgeInsets.only(top: 10),
-                          child: Text(
-                            "Create Account",
-                            style: TextStyle(
-                                fontSize: 40,
-                                color: Colors.blue.shade400,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
                         const SizedBox(
-                          height: 10,
+                          height: 30,
                         ),
                         Container(
                           width: 300,
@@ -320,6 +366,11 @@ class _RegisterationState extends State<Registeration> {
                           width: 300,
                           height: 60,
                           child: lastNameField,
+                        ),
+                        Container(
+                          width: 300,
+                          height: 60,
+                          child: contactField,
                         ),
                         Container(
                           width: 300,
@@ -342,7 +393,7 @@ class _RegisterationState extends State<Registeration> {
                           child: registerButton,
                         ),
                         const SizedBox(
-                          height: 7,
+                          height: 10,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -367,14 +418,14 @@ class _RegisterationState extends State<Registeration> {
                             ),
                           ],
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            gButton,
-                            const SizedBox(width: 40),
-                            fButton,
-                          ],
-                        ),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.center,
+                        //   children: [
+                        //     gButton,
+                        //     const SizedBox(width: 40),
+                        //     fButton,
+                        //   ],
+                        // ),
                         const SizedBox(
                           height: 4,
                         ),
