@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:samss/consumer/services/auth.dart';
 import 'package:samss/supplier/supplier_screen/supplier_login_screen/supplier_login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SupplierHome extends StatefulWidget {
   SupplierHome({Key? key}) : super(key: key);
@@ -22,6 +23,8 @@ class _SupplierHomeState extends State<SupplierHome> {
           FlatButton.icon(
             onPressed: () async {
               await _auth.signOut();
+              final prefs = await SharedPreferences.getInstance();
+              final success = await prefs.remove('email');
               Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (context) => SupplierLogin()));
             },

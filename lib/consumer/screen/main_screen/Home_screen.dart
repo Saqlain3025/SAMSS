@@ -73,12 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
           vertical: 10,
         ),
         minWidth: MediaQuery.of(context).size.width,
-        onPressed: () async {
-          // if (_formKey.currentState!.validate()) {
-          //   signInWithEmailAndPassword(
-          //       emailController.text, passwordController.text);
-          // }
-        },
+        onPressed: () async {},
         child: const Text(
           "Order",
           style: TextStyle(

@@ -375,20 +375,19 @@ class _LoginState extends State<Login> {
   Future signInWithEmailAndPassword(String email, String password) async {
     try {
       final prefs = await SharedPreferences.getInstance();
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
       QuerySnapshot snapshot =
           await FirebaseFirestore.instance.collection('users').get();
       snapshot.docs.forEach((f) async {
         if (f['email'] == email) {
-          UserCredential userCredential = await _auth
-              .signInWithEmailAndPassword(email: email, password: password);
           Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => HomeScreen()));
-
-          await prefs.setString('email', userCredential.user!.uid);
         } else {
           Fluttertoast.showToast(msg: "You are not consumer");
         }
       });
+      await prefs.setString('email', userCredential.user!.uid);
     } on FirebaseAuthException catch (error) {
       switch (error.code) {
         case "invalid-email":
