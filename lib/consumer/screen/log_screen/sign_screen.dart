@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -6,7 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:samss/consumer/screen/log_screen/reset_page.dart';
 import 'package:samss/consumer/screen/main_screen/Home_screen.dart';
 import 'package:samss/consumer/screen/log_screen/register_screen.dart';
-import 'package:samss/supplier/screen/supplier_login_screen/supplier_login.dart';
+import 'package:samss/supplier/supplier_screen/supplier_login_screen/supplier_login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
@@ -165,51 +166,6 @@ class _LoginState extends State<Login> {
       ),
     );
 
-//login with gamil
-    // final gButton = Material(
-    //   child: SizedBox.fromSize(
-    //     child: Material(
-    //       color: Colors.white,
-    //       child: InkWell(
-    //         onTap: () {},
-    //         child: Column(
-    //           mainAxisAlignment: MainAxisAlignment.center,
-    //           children: const <Widget>[
-    //             Icon(
-    //               Icons.mail,
-    //               color: Colors.grey,
-    //             ), // <-- Icon
-    //             Text("Google"), // <-- Text
-    //           ],
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // );
-
-    //login with facebook
-    // final fButton = Material(
-    //   child: SizedBox.fromSize(
-    //     child: Material(
-    //       color: Colors.white,
-    //       child: InkWell(
-    //         onTap: () {},
-    //         child: Column(
-    //           mainAxisAlignment: MainAxisAlignment.center,
-    //           children: const <Widget>[
-    //             Icon(
-    //               Icons.facebook,
-    //               color: Colors.grey,
-    //             ), // <-- Icon
-    //             Text("Facebook"), // <-- Text
-    //           ],
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // );
-
-//forget password
     final resetPassword = Material(
       child: GestureDetector(
         onTap: () {
@@ -389,28 +345,7 @@ class _LoginState extends State<Login> {
                             ),
                           ],
                         ),
-                        // // const SizedBox(height: 10),
-                        // const Text("SignIn with",
-                        //     style: TextStyle(
-                        //         fontSize: 18,
-                        //         color: Colors.blueGrey,
-                        //         fontWeight: FontWeight.bold)),
                         const SizedBox(height: 10),
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.center,
-                        //   children: [
-                        //     gButton,
-                        //     const SizedBox(width: 20),
-                        //     const Text(
-                        //       "OR",
-                        //       style: TextStyle(
-                        //         color: Colors.blueGrey,
-                        //       ),
-                        //     ),
-                        //     const SizedBox(width: 20),
-                        //     fButton,
-                        //   ],
-                        // ),
                         const SizedBox(height: 10),
                         const Text(
                           "Don't have an account?",
@@ -440,11 +375,20 @@ class _LoginState extends State<Login> {
   Future signInWithEmailAndPassword(String email, String password) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => HomeScreen()));
-      await prefs.setString('email', userCredential.user!.uid);
+      QuerySnapshot snapshot =
+          await FirebaseFirestore.instance.collection('users').get();
+      snapshot.docs.forEach((f) async {
+        if (f['email'] == email) {
+          UserCredential userCredential = await _auth
+              .signInWithEmailAndPassword(email: email, password: password);
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => HomeScreen()));
+
+          await prefs.setString('email', userCredential.user!.uid);
+        } else {
+          Fluttertoast.showToast(msg: "You are not consumer");
+        }
+      });
     } on FirebaseAuthException catch (error) {
       switch (error.code) {
         case "invalid-email":

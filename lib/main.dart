@@ -61,23 +61,17 @@ class MyApp extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           }
-          return ScreenUtilInit(
-              designSize: Size(360, 690),
-              minTextAdapt: true,
-              splitScreenMode: true,
-              builder: (child) {
-                return FutureBuilder(
-                    future: checkedLoginStatus(),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                      if (snapshot.hasData == false) {
-                        return SplashScreen();
-                      }
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator());
-                      }
-                      return SplashScreen1();
-                    });
+
+          return FutureBuilder(
+              future: checkedLoginStatus(),
+              builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                if (snapshot.hasData == false) {
+                  return SplashScreen();
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                return SplashScreen1();
               });
         });
   }

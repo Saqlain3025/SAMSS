@@ -1,4 +1,4 @@
-class UserModel {
+class SupplierUserModel {
   String? uid;
   String? email;
   String? firstName;
@@ -6,26 +6,29 @@ class UserModel {
   String? password;
   int? status;
   String? contact;
+  String? stataionAdress;
 
-  UserModel(
+  SupplierUserModel(
       {this.uid,
       this.email,
       this.firstName,
       this.lastName,
       this.password,
+      this.status,
       this.contact,
-      this.status});
+      this.stataionAdress});
 
 //data from server
-  factory UserModel.fromMap(map) {
-    return UserModel(
+  factory SupplierUserModel.fromMap(map) {
+    return SupplierUserModel(
       uid: map['uid'],
       email: map['email'],
       firstName: map['firstName'],
       lastName: map['secondName'],
       password: map['password'],
-      contact: map['contact'],
       status: map['status'],
+      contact: map['contact'],
+      stataionAdress: map['stataionAdress'],
     );
   }
 
@@ -38,6 +41,7 @@ class UserModel {
       'password': password,
       'contact': contact,
       'status': status,
+      'stataionAdress': stataionAdress,
     };
   }
 }

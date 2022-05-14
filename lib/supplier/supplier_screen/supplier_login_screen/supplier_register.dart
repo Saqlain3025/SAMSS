@@ -2,19 +2,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:samss/consumer/model/user.dart';
-import 'package:samss/consumer/screen/log_screen/sign_screen.dart';
-import 'package:samss/consumer/screen/log_screen/verifying_screen.dart';
+import 'package:samss/supplier/supplier_screen/supplier_login_screen/supplier_login.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Registeration extends StatefulWidget {
-  Registeration({Key? key}) : super(key: key);
+import '../../supplier_model/supplier_user.dart';
+import 'supplier_verifying_screen.dart';
+
+class SupplierRegisteration extends StatefulWidget {
+  const SupplierRegisteration({Key? key}) : super(key: key);
 
   @override
-  State<Registeration> createState() => _RegisterationState();
+  State<SupplierRegisteration> createState() => _SupplierRegisterationState();
 }
 
-class _RegisterationState extends State<Registeration> {
+class _SupplierRegisterationState extends State<SupplierRegisteration> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   late final String uid;
@@ -26,6 +28,8 @@ class _RegisterationState extends State<Registeration> {
   TextEditingController passwordController = new TextEditingController();
   final TextEditingController conformPasswordController =
       new TextEditingController();
+  final TextEditingController addressController = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final _screenHieght = MediaQuery.of(context).size.height;
@@ -165,6 +169,7 @@ class _RegisterationState extends State<Registeration> {
       ),
     );
 
+//password field
     final passwordField = TextFormField(
       autofocus: false,
       controller: passwordController,
@@ -227,6 +232,40 @@ class _RegisterationState extends State<Registeration> {
       ),
     );
 
+    //Address field
+    final adressField = TextFormField(
+      autofocus: false,
+      keyboardType: TextInputType.streetAddress,
+      controller: addressController,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return ("Please Enter your Adress");
+        } else if (!RegExp("^[a-zA-Z0-9+_.-]+,[a-zA-Z0-9.-]").hasMatch(value)) {
+          return ("Please Enter valid Adress (Sector,City)");
+        } else {
+          return null;
+        }
+      },
+      onSaved: (value) {
+        emailController.text = value!;
+      },
+      textInputAction: TextInputAction.next,
+      decoration: const InputDecoration(
+        prefixIcon: Icon(Icons.location_on_outlined),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 15,
+        ),
+        hintText: "Supply Station Address",
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
+          ),
+        ),
+      ),
+    );
+
+//registeration button
     final registerButton = Material(
       elevation: 10,
       // color: Colors.blue,
@@ -288,7 +327,7 @@ class _RegisterationState extends State<Registeration> {
                     ),
                   ),
                   const Text(
-                    "Consumer",
+                    "Supplier",
                     style: TextStyle(
                         color: Colors.white, fontWeight: FontWeight.w300),
                   ),
@@ -311,7 +350,7 @@ class _RegisterationState extends State<Registeration> {
                     child: Column(
                       children: [
                         const SizedBox(
-                          height: 30,
+                          height: 20,
                         ),
                         Container(
                           width: 300,
@@ -327,6 +366,11 @@ class _RegisterationState extends State<Registeration> {
                           width: 300,
                           height: 60,
                           child: contactField,
+                        ),
+                        Container(
+                          width: 300,
+                          height: 60,
+                          child: adressField,
                         ),
                         Container(
                           width: 300,
@@ -375,7 +419,7 @@ class _RegisterationState extends State<Registeration> {
                           ],
                         ),
                         const SizedBox(
-                          height: 4,
+                          height: 2,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -386,7 +430,7 @@ class _RegisterationState extends State<Registeration> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Login()));
+                                        builder: (context) => SupplierLogin()));
                               },
                               child: const Text(
                                 "Login",
@@ -423,18 +467,19 @@ class _RegisterationState extends State<Registeration> {
 
   Future postDetailToFirebase() async {
     User? user = _auth.currentUser;
-    UserModel userModel = UserModel();
+    SupplierUserModel userModel = SupplierUserModel();
     userModel.email = user!.email;
     userModel.uid = user.uid;
     userModel.firstName = firstNameController.text;
     userModel.lastName = lastNameController.text;
     userModel.password = passwordController.text;
     userModel.contact = contactController.text;
+    userModel.stataionAdress = addressController.text;
     userModel.status = 0;
 
     try {
       final CollectionReference userCollection =
-          FirebaseFirestore.instance.collection('users');
+          FirebaseFirestore.instance.collection('supplier');
       await userCollection
           .doc(user.uid)
           .set(userModel.toMap())
@@ -442,7 +487,7 @@ class _RegisterationState extends State<Registeration> {
         final prefs = await SharedPreferences.getInstance();
         Navigator.pushAndRemoveUntil(
             (context),
-            MaterialPageRoute(builder: (context) => VerifyScreen()),
+            MaterialPageRoute(builder: (context) => SupplierVerifyScreen()),
             (route) => false);
         await prefs.setString('email', user.uid);
       });
