@@ -11,8 +11,7 @@ import 'package:samss/supplier/supplier_screen/supplier_login_screen/supplier_lo
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
-
+  String? email;
   @override
   State<Login> createState() => _LoginState();
 }
@@ -29,6 +28,8 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     final _screenHieght = MediaQuery.of(context).size.height;
     final _screenWidth = MediaQuery.of(context).size.width;
+
+    widget.email = emailController.text;
 
 //email field
     final emailField = TextFormField(

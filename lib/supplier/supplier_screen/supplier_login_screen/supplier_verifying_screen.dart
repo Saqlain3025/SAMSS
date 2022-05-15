@@ -52,8 +52,8 @@ class _SupplierVerifyScreenState extends State<SupplierVerifyScreen> {
     if (user!.emailVerified) {
       timer!.cancel();
       setState(() {
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => SupplierHome()));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => SupplierHome()));
       });
     }
   }
