@@ -7,6 +7,7 @@ class SupplierUserModel {
   int? status;
   String? contact;
   String? stataionAdress;
+  String? account;
 
   SupplierUserModel(
       {this.uid,
@@ -16,20 +17,21 @@ class SupplierUserModel {
       this.password,
       this.status,
       this.contact,
-      this.stataionAdress});
+      this.stataionAdress,
+      this.account});
 
 //data from server
   factory SupplierUserModel.fromMap(map) {
     return SupplierUserModel(
-      uid: map['uid'],
-      email: map['email'],
-      firstName: map['firstName'],
-      lastName: map['secondName'],
-      password: map['password'],
-      status: map['status'],
-      contact: map['contact'],
-      stataionAdress: map['stataionAdress'],
-    );
+        uid: map['uid'],
+        email: map['email'],
+        firstName: map['firstName'],
+        lastName: map['secondName'],
+        password: map['password'],
+        status: map['status'],
+        contact: map['contact'],
+        stataionAdress: map['stataionAdress'],
+        account: map['account']);
   }
 
   Map<String, dynamic> toMap() {
@@ -42,6 +44,7 @@ class SupplierUserModel {
       'contact': contact,
       'status': status,
       'stataionAdress': stataionAdress,
+      'account': account,
     };
   }
 }

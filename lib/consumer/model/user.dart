@@ -6,6 +6,7 @@ class UserModel {
   String? password;
   int? status;
   String? contact;
+  String? account;
 
   UserModel(
       {this.uid,
@@ -14,19 +15,20 @@ class UserModel {
       this.lastName,
       this.password,
       this.contact,
-      this.status});
+      this.status,
+      this.account});
 
 //data from server
   factory UserModel.fromMap(map) {
     return UserModel(
-      uid: map['uid'],
-      email: map['email'],
-      firstName: map['firstName'],
-      lastName: map['secondName'],
-      password: map['password'],
-      contact: map['contact'],
-      status: map['status'],
-    );
+        uid: map['uid'],
+        email: map['email'],
+        firstName: map['firstName'],
+        lastName: map['secondName'],
+        password: map['password'],
+        contact: map['contact'],
+        status: map['status'],
+        account: map['account']);
   }
 
   Map<String, dynamic> toMap() {
@@ -38,6 +40,7 @@ class UserModel {
       'password': password,
       'contact': contact,
       'status': status,
+      'account': account,
     };
   }
 }

@@ -1,10 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:samss/consumer/screen/splash.dart';
 import 'package:samss/consumer/screen/splash_screen.dart';
 import 'package:samss/consumer/services/notification.dart';
+import 'package:samss/supplier/supplier_screen/suplier_home_screen/supplier_splash.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
@@ -17,22 +17,13 @@ Future<void> main() async {
     SystemUiMode.edgeToEdge,
   );
 
-  runApp(
-    //MyApp()
-    ScreenUtilInit(
-        designSize: Size(360, 690),
-        minTextAdapt: true,
-        splitScreenMode: true,
-        builder: (child) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
-            ),
-            home: MyApp(),
-          );
-        }),
-  );
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    theme: ThemeData(
+      primarySwatch: Colors.blue,
+    ),
+    home: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -40,11 +31,13 @@ class MyApp extends StatelessWidget {
 
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   String value = '';
+  String? accountType;
 
   Future<bool> checkedLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
     value = prefs.getString('email')!;
-    if (value == null) {
+    accountType = prefs.getString('account')!;
+    if (value.isEmpty) {
       return false;
     }
     return true;
@@ -71,7 +64,6 @@ class MyApp extends StatelessWidget {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 }
-
                 return SplashScreen1();
               });
         });

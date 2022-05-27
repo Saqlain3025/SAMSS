@@ -3,6 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:samss/consumer/model/user.dart';
 import 'package:samss/consumer/screen/log_screen/sign_screen.dart';
+import 'package:samss/consumer/screen/main_screen/order_history/order_list.dart';
+import 'package:samss/consumer/screen/main_screen/setting/setting.dart';
+import 'package:samss/consumer/screen/main_screen/support/support.dart';
 import 'package:samss/consumer/services/auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -57,7 +60,7 @@ class _SlideBarState extends State<SlideBar> {
           await _auth.signOut();
           final prefs = await SharedPreferences.getInstance();
           final success = await prefs.remove('email');
-
+          final success1 = await prefs.remove('account');
           Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => Login()));
         },
@@ -105,7 +108,7 @@ class _SlideBarState extends State<SlideBar> {
                   ),
                 )),
           ),
-          const ListTile(
+          ListTile(
             leading: Icon(
               Icons.settings,
               size: 40,
@@ -118,9 +121,16 @@ class _SlideBarState extends State<SlideBar> {
                 fontSize: 22,
               ),
             ),
-            onTap: null,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Setting(),
+                ),
+              );
+            },
           ),
-          const ListTile(
+          ListTile(
             leading: Icon(
               Icons.history,
               size: 40,
@@ -133,9 +143,16 @@ class _SlideBarState extends State<SlideBar> {
                 fontSize: 22,
               ),
             ),
-            onTap: null,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ConsumerOrderList(),
+                ),
+              );
+            },
           ),
-          const ListTile(
+          ListTile(
             leading: Icon(
               Icons.support_agent,
               size: 40,
@@ -148,7 +165,14 @@ class _SlideBarState extends State<SlideBar> {
                 fontSize: 22,
               ),
             ),
-            onTap: null,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ConsumerReport(),
+                ),
+              );
+            },
           ),
           const SizedBox(
             height: 100,

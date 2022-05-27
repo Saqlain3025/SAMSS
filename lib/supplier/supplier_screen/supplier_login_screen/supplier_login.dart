@@ -382,15 +382,28 @@ class _LoginState extends State<SupplierLogin> {
           email: email, password: password);
       QuerySnapshot snapshot =
           await FirebaseFirestore.instance.collection('supplier').get();
-      snapshot.docs.forEach((f) async {
+      for (final f in snapshot.docs) {
         if (f['email'] == email) {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => SupplierHome()));
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => SupplierHome()));
+          await prefs.setString('email', userCredential.user!.uid);
+          await prefs.setString('account', f['account']);
+          break;
         } else {
-          Fluttertoast.showToast(msg: "You are not supplier");
+          Fluttertoast.showToast(msg: "You are not consumer");
         }
-      });
-      await prefs.setString('email', userCredential.user!.uid);
+      }
+
+      // snapshot.docs.forEach((f) async {
+      //   if (f['email'] == email) {
+      //     Navigator.of(context).pushReplacement(
+      //         MaterialPageRoute(builder: (context) => SupplierHome()));
+      //     await prefs.setString('email', userCredential.user!.uid);
+      //     await prefs.setString('account', f['account']);
+      //   } else {
+      //     Fluttertoast.showToast(msg: "You are not supplier");
+      //   }
+      // });
     } on FirebaseAuthException catch (error) {
       switch (error.code) {
         case "invalid-email":

@@ -431,6 +431,7 @@ class _RegisterationState extends State<Registeration> {
     userModel.password = passwordController.text;
     userModel.contact = contactController.text;
     userModel.status = 0;
+    userModel.account = 'consumer';
 
     try {
       final CollectionReference userCollection =
