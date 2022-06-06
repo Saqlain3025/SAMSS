@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:samss/consumer/screen/splash.dart';
 import 'package:samss/consumer/screen/splash_screen.dart';
 import 'package:samss/consumer/services/notification.dart';
-import 'package:samss/supplier/supplier_screen/suplier_home_screen/supplier_splash.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {

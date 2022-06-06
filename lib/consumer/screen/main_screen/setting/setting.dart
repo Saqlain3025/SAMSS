@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:samss/consumer/model/user.dart';
 import 'package:samss/consumer/screen/log_screen/sign_screen.dart';
 import 'package:samss/consumer/screen/main_screen/Home_screen.dart';
+import 'package:samss/consumer/services/auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Setting extends StatefulWidget {
   const Setting({Key? key}) : super(key: key);
@@ -13,6 +16,7 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingState extends State<Setting> {
+  final AuthServices _auth = AuthServices();
   User? user = FirebaseAuth.instance.currentUser;
   final TextEditingController firstNameController = new TextEditingController();
   final TextEditingController lastNameController = new TextEditingController();
@@ -51,19 +55,9 @@ class _SettingState extends State<Setting> {
         builder: (context) => AlertDialog(
               title: Text("Your First Name"),
               content: TextFormField(
-                autofocus: true,
                 keyboardType: TextInputType.name,
                 controller: firstNameController,
-                validator: (value) {
-                  RegExp regex = new RegExp(r'^.{3,}$');
-                  if (value!.isEmpty) {
-                    return ("Please Enter your First Name");
-                  } else if (!regex.hasMatch(value)) {
-                    return ("Please Enter name of 3 character or more");
-                  } else {
-                    return null;
-                  }
-                },
+                validator: (value) {},
                 onSaved: (value) {
                   firstNameController.text = value!;
                 },
@@ -84,12 +78,21 @@ class _SettingState extends State<Setting> {
               actions: [
                 TextButton(
                   onPressed: () async {
-                    final docUser = FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(FirebaseAuth.instance.currentUser!.uid);
-                    docUser.update({'firstName': firstNameController.text});
-                    Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => Setting()));
+                    if (firstNameController.text.isNotEmpty) {
+                      if (firstNameController.text.length >= 3) {
+                        final docUser = FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(FirebaseAuth.instance.currentUser!.uid);
+                        docUser.update({'firstName': firstNameController.text});
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) => Setting()));
+                      } else {
+                        Fluttertoast.showToast(
+                            msg: "Please enter atleast 3 character.");
+                      }
+                    } else {
+                      Fluttertoast.showToast(msg: "Please enter first name.");
+                    }
                   },
                   child: Text("Save"),
                 )
@@ -143,16 +146,7 @@ class _SettingState extends State<Setting> {
                 autofocus: true,
                 keyboardType: TextInputType.name,
                 controller: lastNameController,
-                validator: (value) {
-                  RegExp regex = new RegExp(r'^.{3,}$');
-                  if (value!.isEmpty) {
-                    return ("Please Enter your Last Name");
-                  } else if (!regex.hasMatch(value)) {
-                    return ("Please Enter name of 3 character or more");
-                  } else {
-                    return null;
-                  }
-                },
+                validator: (value) {},
                 onSaved: (value) {
                   lastNameController.text = value!;
                 },
@@ -173,12 +167,21 @@ class _SettingState extends State<Setting> {
               actions: [
                 TextButton(
                   onPressed: () async {
-                    final docUser = FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(FirebaseAuth.instance.currentUser!.uid);
-                    docUser.update({'secondName': lastNameController.text});
-                    Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => Setting()));
+                    if (lastNameController.text.isNotEmpty) {
+                      if (lastNameController.text.length >= 3) {
+                        final docUser = FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(FirebaseAuth.instance.currentUser!.uid);
+                        docUser.update({'secondName': lastNameController.text});
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) => Setting()));
+                      } else {
+                        Fluttertoast.showToast(
+                            msg: "Please enter atleast 3 character.");
+                      }
+                    } else {
+                      Fluttertoast.showToast(msg: "Please enter last name.");
+                    }
                   },
                   child: Text("Save"),
                 )
@@ -231,16 +234,7 @@ class _SettingState extends State<Setting> {
                 autofocus: true,
                 keyboardType: TextInputType.phone,
                 controller: contactController,
-                validator: (value) {
-                  RegExp regex = new RegExp(r'^.{11,}$');
-                  if (value!.isEmpty) {
-                    return ("Please Enter your Contact.");
-                  } else if (!regex.hasMatch(value)) {
-                    return ("Please Enter name of 11 character or more");
-                  } else {
-                    return null;
-                  }
-                },
+                validator: (value) {},
                 onSaved: (value) {
                   lastNameController.text = value!;
                 },
@@ -261,12 +255,20 @@ class _SettingState extends State<Setting> {
               actions: [
                 TextButton(
                   onPressed: () async {
-                    final docUser = FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(FirebaseAuth.instance.currentUser!.uid);
-                    docUser.update({'contact': contactController.text});
-                    Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => Setting()));
+                    if (contactController.text.isNotEmpty) {
+                      if (contactController.text.length == 11) {
+                        final docUser = FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(FirebaseAuth.instance.currentUser!.uid);
+                        docUser.update({'contact': contactController.text});
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) => Setting()));
+                      } else {
+                        Fluttertoast.showToast(msg: "Please enter 11 digits.");
+                      }
+                    } else {
+                      Fluttertoast.showToast(msg: "Please enter contact.");
+                    }
                   },
                   child: Text("Save"),
                 )
@@ -312,58 +314,65 @@ class _SettingState extends State<Setting> {
 
 // password field
     Future updatePassword() async => showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text("Your Password"),
-              content: TextFormField(
-                autofocus: true,
-                keyboardType: TextInputType.text,
-                controller: passwordController,
-                validator: (value) {
-                  RegExp regex = new RegExp(r'^.{6,}$');
-                  if (value!.isEmpty) {
-                    return ("Please Enter your password");
-                  } else if (!regex.hasMatch(value)) {
-                    return ("Please Enter password of 6 character");
-                  } else {
-                    return null;
-                  }
-                },
-                obscureText: true,
-                onSaved: (value) {
-                  passwordController.text = value!;
-                },
-                textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 15,
-                  ),
-                  hintText: "Enter your password",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10),
-                    ),
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text("Your Password"),
+            content: TextFormField(
+              autofocus: true,
+              keyboardType: TextInputType.text,
+              controller: passwordController,
+              validator: (value) {},
+              obscureText: true,
+              onSaved: (value) {
+                passwordController.text = value!;
+              },
+              textInputAction: TextInputAction.next,
+              decoration: const InputDecoration(
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 15,
+                ),
+                hintText: "Enter your password",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
                   ),
                 ),
               ),
-              actions: [
-                TextButton(
-                  onPressed: () async {
-                    final docUser = FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(FirebaseAuth.instance.currentUser!.uid);
-                    docUser.update({'password': passwordController.text});
-                    final passwordUpdate = await FirebaseAuth
-                        .instance.currentUser
-                        ?.updatePassword(passwordController.text);
-                    Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => Login()));
-                  },
-                  child: Text("Save"),
-                )
-              ],
-            ));
+            ),
+            actions: [
+              TextButton(
+                onPressed: () async {
+                  if (passwordController.text.isNotEmpty) {
+                    if (passwordController.text.length >= 6) {
+                      final docUser = FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(FirebaseAuth.instance.currentUser!.uid);
+                      docUser.update({'password': passwordController.text});
+                      final passwordUpdate = await FirebaseAuth
+                          .instance.currentUser
+                          ?.updatePassword(passwordController.text);
+                      await _auth.signOut();
+                      final prefs = await SharedPreferences.getInstance();
+                      final success = await prefs.remove('email');
+                      final success1 = await prefs.remove('account');
+                      Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (context) => Login()));
+                      Fluttertoast.showToast(
+                          msg: "Password Change Successfully.");
+                    } else {
+                      Fluttertoast.showToast(
+                          msg: "Please enter atlest 6 character.");
+                    }
+                  } else {
+                    Fluttertoast.showToast(msg: "Please enter password.");
+                  }
+                },
+                child: Text("Save"),
+              )
+            ],
+          ),
+        );
 
     final passwordField = Container(
       height: 50,
@@ -428,79 +437,81 @@ class _SettingState extends State<Setting> {
         title: Text("Setting"),
         centerTitle: true,
       ),
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.fromLTRB(0, 50, 0, 50),
-              child: const Text(
-                "Profile",
-                style: TextStyle(
-                  fontSize: 60,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.blueAccent,
+      body: SingleChildScrollView(
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.fromLTRB(0, 50, 0, 50),
+                child: const Text(
+                  "Profile",
+                  style: TextStyle(
+                    fontSize: 60,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.blueAccent,
+                  ),
                 ),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 60),
-              padding: EdgeInsets.only(top: 10),
-              height: 40,
-              child: Text(
-                "First Name",
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.blueAccent,
+              Container(
+                margin: EdgeInsets.only(left: 60),
+                padding: EdgeInsets.only(top: 10),
+                height: 40,
+                child: Text(
+                  "First Name",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.blueAccent,
+                  ),
                 ),
+                width: MediaQuery.of(context).size.width,
               ),
-              width: MediaQuery.of(context).size.width,
-            ),
-            firstName,
-            Container(
-              margin: EdgeInsets.only(left: 60, top: 10),
-              padding: EdgeInsets.only(top: 10),
-              height: 40,
-              child: Text(
-                "Last Name",
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.blueAccent,
+              firstName,
+              Container(
+                margin: EdgeInsets.only(left: 60, top: 10),
+                padding: EdgeInsets.only(top: 10),
+                height: 40,
+                child: Text(
+                  "Last Name",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.blueAccent,
+                  ),
                 ),
+                width: MediaQuery.of(context).size.width,
               ),
-              width: MediaQuery.of(context).size.width,
-            ),
-            lasttName,
-            Container(
-              margin: EdgeInsets.only(left: 60, top: 10),
-              padding: EdgeInsets.only(top: 10),
-              height: 40,
-              child: Text(
-                "Contact",
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.blueAccent,
+              lasttName,
+              Container(
+                margin: EdgeInsets.only(left: 60, top: 10),
+                padding: EdgeInsets.only(top: 10),
+                height: 40,
+                child: Text(
+                  "Contact",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.blueAccent,
+                  ),
                 ),
+                width: MediaQuery.of(context).size.width,
               ),
-              width: MediaQuery.of(context).size.width,
-            ),
-            contact,
-            Container(
-              margin: EdgeInsets.only(left: 60, top: 10),
-              padding: EdgeInsets.only(top: 10),
-              height: 40,
-              child: Text(
-                "Password",
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.blueAccent,
+              contact,
+              Container(
+                margin: EdgeInsets.only(left: 60, top: 10),
+                padding: EdgeInsets.only(top: 10),
+                height: 40,
+                child: Text(
+                  "Password",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.blueAccent,
+                  ),
                 ),
+                width: MediaQuery.of(context).size.width,
               ),
-              width: MediaQuery.of(context).size.width,
-            ),
-            passwordField,
-          ],
+              passwordField,
+            ],
+          ),
         ),
       ),
     );

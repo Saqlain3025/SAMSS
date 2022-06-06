@@ -390,7 +390,7 @@ class _LoginState extends State<SupplierLogin> {
           await prefs.setString('account', f['account']);
           break;
         } else {
-          Fluttertoast.showToast(msg: "You are not consumer");
+          Fluttertoast.showToast(msg: "You are not supplier");
         }
       }
 

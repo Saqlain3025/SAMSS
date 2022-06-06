@@ -476,6 +476,7 @@ class _SupplierRegisterationState extends State<SupplierRegisteration> {
     userModel.contact = contactController.text;
     userModel.stataionAdress = addressController.text;
     userModel.status = 0;
+    userModel.account = "supplier";
 
     try {
       final CollectionReference userCollection =

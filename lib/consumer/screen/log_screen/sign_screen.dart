@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:fluttertoast/fluttertoast.dart';
-
 import 'package:samss/consumer/screen/log_screen/reset_page.dart';
 import 'package:samss/consumer/screen/main_screen/Home_screen.dart';
 import 'package:samss/consumer/screen/log_screen/register_screen.dart';
@@ -376,12 +375,10 @@ class _LoginState extends State<Login> {
   Future signInWithEmailAndPassword(String email, String password) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       QuerySnapshot snapshot =
           await FirebaseFirestore.instance.collection('users').get();
-
       for (final f in snapshot.docs) {
         if (f['email'] == email) {
           Navigator.of(context).pushReplacement(
@@ -393,17 +390,6 @@ class _LoginState extends State<Login> {
           Fluttertoast.showToast(msg: "You are not consumer");
         }
       }
-
-      // snapshot.docs.forEach((f) async {
-      //   if (f['email'] == email) {
-      //     Navigator.of(context).pushReplacement(
-      //         MaterialPageRoute(builder: (context) => HomeScreen()));
-      //     await prefs.setString('email', userCredential.user!.uid);
-      //     await prefs.setString('account', f['account']);
-      //   } else {
-      //     Fluttertoast.showToast(msg: "You are not consumer");
-      //   }
-      // });
     } on FirebaseAuthException catch (error) {
       switch (error.code) {
         case "invalid-email":

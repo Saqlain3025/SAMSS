@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:samss/consumer/model/user.dart';
+import 'package:samss/consumer/model/user_tanki.dart';
 import 'package:samss/consumer/screen/log_screen/sign_screen.dart';
 import 'package:samss/consumer/screen/log_screen/verifying_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,6 +18,7 @@ class Registeration extends StatefulWidget {
 
 class _RegisterationState extends State<Registeration> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
   final _formKey = GlobalKey<FormState>();
   late final String uid;
 
@@ -277,7 +280,7 @@ class _RegisterationState extends State<Registeration> {
               child: Column(
                 children: [
                   Container(
-                    margin: const EdgeInsets.only(top: 50),
+                    margin: const EdgeInsets.only(top: 40),
                     padding: EdgeInsets.all(10),
                     child: const Text(
                       "New Account",
@@ -298,7 +301,7 @@ class _RegisterationState extends State<Registeration> {
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 500),
                     width: double.infinity,
-                    height: _screenHieght - 275,
+                    height: _screenHieght - 245,
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(30),
@@ -311,7 +314,7 @@ class _RegisterationState extends State<Registeration> {
                     child: Column(
                       children: [
                         const SizedBox(
-                          height: 30,
+                          height: 20,
                         ),
                         Container(
                           width: 300,
@@ -423,6 +426,7 @@ class _RegisterationState extends State<Registeration> {
 
   Future postDetailToFirebase() async {
     User? user = _auth.currentUser;
+    // for firestore
     UserModel userModel = UserModel();
     userModel.email = user!.email;
     userModel.uid = user.uid;
@@ -433,14 +437,29 @@ class _RegisterationState extends State<Registeration> {
     userModel.status = 0;
     userModel.account = 'consumer';
 
+    //for realtime
+    UserTankiModel userTankiModel = UserTankiModel();
+    userTankiModel.uid = user.uid;
+    userTankiModel.tanki_status = 0;
+
     try {
+      //create refrence in realtime
+      final DatabaseReference ref = FirebaseDatabase.instance.ref(
+          "https://samss1-default-rtdb.asia-southeast1.firebasedatabase.app/sensor_record");
+
+      //create collection in firestor
       final CollectionReference userCollection =
           FirebaseFirestore.instance.collection('users');
+
+      // save data in firestore
       await userCollection
           .doc(user.uid)
           .set(userModel.toMap())
           .then((value) async {
         final prefs = await SharedPreferences.getInstance();
+
+        // save data in realtime
+        await ref.push().set(userTankiModel.toMap());
         Navigator.pushAndRemoveUntil(
             (context),
             MaterialPageRoute(builder: (context) => VerifyScreen()),
