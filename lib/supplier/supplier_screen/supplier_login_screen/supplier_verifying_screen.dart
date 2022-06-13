@@ -53,7 +53,7 @@ class _SupplierVerifyScreenState extends State<SupplierVerifyScreen> {
       timer!.cancel();
       setState(() {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => SupplierHome()));
+            context, MaterialPageRoute(builder: (context) => SupplierMain()));
       });
     }
   }

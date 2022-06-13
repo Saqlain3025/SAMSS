@@ -32,7 +32,7 @@ class _SplashScreen1State extends State<SplashScreen1> {
           break;
         } else {
           Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => SupplierHome()));
+              MaterialPageRoute(builder: (context) => SupplierMain()));
         }
       }
     } catch (e) {

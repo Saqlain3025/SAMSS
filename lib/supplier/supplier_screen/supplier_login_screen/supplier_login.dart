@@ -385,7 +385,7 @@ class _LoginState extends State<SupplierLogin> {
       for (final f in snapshot.docs) {
         if (f['email'] == email) {
           Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => SupplierHome()));
+              MaterialPageRoute(builder: (context) => SupplierMain()));
           await prefs.setString('email', userCredential.user!.uid);
           await prefs.setString('account', f['account']);
           break;

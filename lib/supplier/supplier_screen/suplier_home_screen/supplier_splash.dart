@@ -19,7 +19,7 @@ class _SupplierSplashState extends State<SupplierSplash> {
     try {
       await Future.delayed(const Duration(milliseconds: 1000), () {});
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => SupplierHome()));
+          context, MaterialPageRoute(builder: (context) => SupplierMain()));
     } catch (e) {
       print(e.toString());
     }
