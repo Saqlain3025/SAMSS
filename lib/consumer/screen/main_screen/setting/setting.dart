@@ -117,11 +117,16 @@ class _SettingState extends State<Setting> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            "${loginUser.firstName}",
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.blueAccent,
+          Expanded(
+            child: Text(
+              "${loginUser.firstName}",
+              overflow: TextOverflow.fade,
+              maxLines: 1,
+              softWrap: true,
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.blueAccent,
+              ),
             ),
           ),
           GestureDetector(
@@ -205,11 +210,16 @@ class _SettingState extends State<Setting> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            "${loginUser.lastName}",
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.blueAccent,
+          Expanded(
+            child: Text(
+              "${loginUser.lastName}",
+              overflow: TextOverflow.fade,
+              maxLines: 1,
+              softWrap: false,
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.blueAccent,
+              ),
             ),
           ),
           GestureDetector(
@@ -292,11 +302,16 @@ class _SettingState extends State<Setting> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            "${loginUser.contact}",
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.blueAccent,
+          Expanded(
+            child: Text(
+              "${loginUser.contact}",
+              overflow: TextOverflow.fade,
+              maxLines: 1,
+              softWrap: false,
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.blueAccent,
+              ),
             ),
           ),
           GestureDetector(
@@ -391,11 +406,16 @@ class _SettingState extends State<Setting> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            "${loginUser.password}",
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.blueAccent,
+          Expanded(
+            child: Text(
+              "${loginUser.password}",
+              overflow: TextOverflow.fade,
+              maxLines: 1,
+              softWrap: false,
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.blueAccent,
+              ),
             ),
           ),
           GestureDetector(

@@ -1,7 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:samss/consumer/model/user.dart';
 import 'package:samss/consumer/screen/main_screen/hoome1.dart';
 import 'package:samss/consumer/screen/main_screen/slidebar.dart';
+import 'package:samss/shared/consumer_order.dart';
+import 'package:xid/xid.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key? key}) : super(key: key);
@@ -12,48 +17,257 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  double _tankerQuantity = 0;
-  double _price = 0;
+  int tankerQuantity = 0;
+  int price = 0;
+  final TextEditingController addressController = new TextEditingController();
+  final TextEditingController cityController = new TextEditingController();
+
+  String _apartmentAddress = "";
+  String _cityAddress = " ";
+
+  UserModel loginUser = UserModel();
+  User? user = FirebaseAuth.instance.currentUser;
+  @override
+  void initState() {
+    super.initState();
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(user!.uid)
+        .get()
+        .then((value) {
+      this.loginUser = UserModel.fromMap(value.data());
+      setState(() {});
+    });
+  }
 
   Widget build(BuildContext context) {
     final _screenHieght = MediaQuery.of(context).size.height;
     final _screenWidth = MediaQuery.of(context).size.width;
 
-    final TextEditingController emailController = new TextEditingController();
-
-//location fieldd
-    final locationField = TextFormField(
+    //Appartment/Home Address
+    final apartmentAddress = TextFormField(
       autofocus: false,
-      keyboardType: TextInputType.emailAddress,
-      controller: emailController,
-      validator: (value) {
-        if (value!.isEmpty) {
-          return ("Please Enter your Location");
-        } else if (!RegExp("^[a-zA-Z0-9+_.-]").hasMatch(value)) {
-          return ("Please Enter valid Location");
-        } else {
-          return null;
-        }
-      },
+      keyboardType: TextInputType.streetAddress,
+      controller: addressController,
+      validator: (value) {},
       onSaved: (value) {
-        emailController.text = value!;
+        addressController.text = value!;
       },
       textInputAction: TextInputAction.next,
       decoration: const InputDecoration(
+        hintStyle: TextStyle(color: Colors.white),
         prefixIcon: Icon(
-          Icons.location_on_outlined,
-          color: Colors.blue,
+          Icons.home_work_outlined,
+          color: Colors.white,
         ),
         contentPadding: EdgeInsets.symmetric(
           horizontal: 20,
           vertical: 15,
         ),
-        hintText: "Location",
+        hintText: "Enter Apertment/Home Address",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(10),
           ),
         ),
+      ),
+    );
+
+    //city address
+    final cityAddress = TextFormField(
+      autofocus: false,
+      keyboardType: TextInputType.streetAddress,
+      controller: cityController,
+      validator: (value) {},
+      onSaved: (value) {
+        cityController.text = value!;
+      },
+      textInputAction: TextInputAction.done,
+      decoration: const InputDecoration(
+        hintStyle: TextStyle(color: Colors.white),
+        prefixIcon: Icon(
+          Icons.location_city,
+          color: Colors.white,
+        ),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 15,
+        ),
+        hintText: "Enter City",
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
+          ),
+        ),
+      ),
+    );
+
+    // Done button form address
+    final doneAddressButton = Material(
+      elevation: 10,
+      color: Colors.blue,
+      borderRadius: const BorderRadius.all(
+        Radius.circular(30),
+      ),
+      child: MaterialButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18.0),
+          side: BorderSide(color: Colors.blueAccent),
+        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 10,
+        ),
+        minWidth: MediaQuery.of(context).size.width,
+        onPressed: () {
+          if (addressController.text.isEmpty ||
+              cityController.text.isEmpty ||
+              addressController.text == '' ||
+              cityController.text == '') {
+            Fluttertoast.showToast(
+                msg:
+                    "Please enter Address e.g. House#10,st#11,sihala,islamabad");
+          } else {
+            setState(() {
+              _apartmentAddress = addressController.text;
+              _cityAddress = cityController.text;
+              Navigator.pop(context, 'Done');
+            });
+          }
+        },
+        child: const Text(
+          "Done",
+          style: TextStyle(
+            fontSize: 22,
+          ),
+        ),
+      ),
+    );
+
+//Clear filed button
+    final clearAddressButon = Material(
+      elevation: 10,
+      color: Colors.blue,
+      borderRadius: const BorderRadius.all(
+        Radius.circular(30),
+      ),
+      child: MaterialButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18.0),
+          side: BorderSide(color: Colors.blue),
+        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 10,
+        ),
+        minWidth: MediaQuery.of(context).size.width,
+        onPressed: () {
+          setState(() {
+            addressController.text = '';
+            cityController.text = '';
+          });
+        },
+        child: const Text(
+          "Clear",
+          style: TextStyle(
+            fontSize: 22,
+          ),
+        ),
+      ),
+    );
+
+//location fieldd
+
+    final locationField = Container(
+      height: 40,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Color.fromARGB(55, 63, 81, 181),
+            Color.fromARGB(55, 68, 137, 255),
+          ],
+        ),
+        borderRadius: BorderRadius.all(
+          Radius.circular(10),
+        ),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      margin: EdgeInsets.symmetric(horizontal: 60),
+      child: Row(
+        children: [
+          Icon(
+            Icons.location_on_outlined,
+            color: Colors.blueAccent,
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                final locationDialogBox = showModalBottomSheet(
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  builder: (context) => Container(
+                    padding: EdgeInsets.only(left: 20, right: 20, top: 40),
+                    transform: Matrix4.translationValues(0, 0, 0),
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30),
+                      ),
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.indigo,
+                          Colors.blueAccent,
+                        ],
+                      ),
+                    ),
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.all(60),
+                            padding: EdgeInsets.all(20),
+                            child: const Text(
+                              "Address",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 40,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          apartmentAddress,
+                          SizedBox(
+                            height: 30,
+                          ),
+                          cityAddress,
+                          SizedBox(
+                            height: 80,
+                          ),
+                          doneAddressButton,
+                          SizedBox(
+                            height: 20,
+                          ),
+                          clearAddressButon,
+                        ],
+                      ),
+                    ),
+                  ),
+                  context: context,
+                );
+              },
+              child: Text(
+                "${_apartmentAddress}, ${_cityAddress}",
+                overflow: TextOverflow.fade,
+                maxLines: 1,
+                softWrap: false,
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.blueAccent,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
 
@@ -73,7 +287,9 @@ class _HomeScreenState extends State<HomeScreen> {
           vertical: 10,
         ),
         minWidth: MediaQuery.of(context).size.width,
-        onPressed: () async {},
+        onPressed: () async {
+          postOrderDetailToFirebase();
+        },
         child: const Text(
           "Order",
           style: TextStyle(
@@ -158,15 +374,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 onTap: () {
                                   setState(() {
-                                    if (_tankerQuantity <= 0) {
+                                    if (tankerQuantity <= 0) {
                                       return;
                                     }
-                                    _tankerQuantity = _tankerQuantity - 1;
-                                    _price = 1200 * _tankerQuantity;
+                                    tankerQuantity = tankerQuantity - 1;
+                                    price = 1200 * tankerQuantity;
                                   });
                                 }),
                             Text(
-                              "$_tankerQuantity",
+                              "$tankerQuantity",
                               style: TextStyle(
                                 fontSize: 20,
                                 color: Colors.blue.shade400,
@@ -180,8 +396,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 onTap: () {
                                   setState(() {
-                                    _tankerQuantity = _tankerQuantity + 1;
-                                    _price = 1200 * _tankerQuantity;
+                                    tankerQuantity = tankerQuantity + 1;
+                                    price = 1200 * tankerQuantity;
                                   });
                                 }),
                           ],
@@ -190,7 +406,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Container(
                         width: 300,
                         child: Text(
-                          'Total Price: $_price',
+                          'Total Price: $price',
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                               fontSize: 20,
@@ -201,10 +417,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                      Container(
-                        width: 300,
-                        child: locationField,
-                      ),
+                      locationField,
                       const SizedBox(
                         height: 20,
                       ),
@@ -222,5 +435,38 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  Future postOrderDetailToFirebase() async {
+    var xid = Xid();
+    ConsumerOrderModel orderDetail = ConsumerOrderModel();
+    orderDetail.email = loginUser.email;
+    orderDetail.consumerUid = loginUser.uid;
+    orderDetail.firstName = loginUser.firstName;
+    orderDetail.lastName = loginUser.lastName;
+    orderDetail.contact = loginUser.contact;
+    orderDetail.cityAddress = addressController.text;
+    orderDetail.homeAddress = cityController.text;
+    orderDetail.status = 'new';
+    orderDetail.tankerQuantity = tankerQuantity;
+    orderDetail.tankerPrice = price;
+    try {
+      if (tankerQuantity != 0 &&
+          addressController.text.isNotEmpty &&
+          cityController.text.isNotEmpty) {
+        await FirebaseFirestore.instance
+            .collection('order')
+            .doc("$xid")
+            .set(orderDetail.toMap());
+        // .then((value) =>   Navigator.pushAndRemoveUntil(
+        //   (context),
+        //   MaterialPageRoute(builder: (context) => VerifyScreen()),
+        //   (route) => false));
+      } else {
+        Fluttertoast.showToast(msg: "Check Tanker Quantity/Address.");
+      }
+    } on FirebaseAuthException catch (e) {
+      Fluttertoast.showToast(msg: e.toString());
+    }
   }
 }

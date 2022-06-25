@@ -438,14 +438,14 @@ class _RegisterationState extends State<Registeration> {
     userModel.account = 'consumer';
 
     //for realtime
-    UserTankiModel userTankiModel = UserTankiModel();
+    // UserTankiModel userTankiModel = UserTankiModel();
 
-    userTankiModel.tanki_status = 0;
+    // userTankiModel.tanki_status = 0;
 
     try {
-      //create refrence in realtime
-      final DatabaseReference ref = FirebaseDatabase.instance.ref(
-          "https://samss1-default-rtdb.asia-southeast1.firebasedatabase.app/");
+      // //create refrence in realtime
+      // final DatabaseReference ref = FirebaseDatabase.instance.ref(
+      //     "https://samss1-default-rtdb.asia-southeast1.firebasedatabase.app/");
 
       //create collection in firestor
       final CollectionReference userCollection =
@@ -459,7 +459,7 @@ class _RegisterationState extends State<Registeration> {
         final prefs = await SharedPreferences.getInstance();
 
         // save data in realtime
-        ref.child(user.uid).set(userTankiModel.toMap());
+        // ref.child(user.uid).set(userTankiModel.toMap());
         Navigator.pushAndRemoveUntil(
             (context),
             MaterialPageRoute(builder: (context) => VerifyScreen()),
